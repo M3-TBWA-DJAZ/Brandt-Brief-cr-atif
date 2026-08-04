@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brandt - Brief Créatif</title>
+    <!-- Chargement de la librairie pour l'export PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        /* Déclaration de la police Product Sans (avec fallbacks) */
+        @font-face {
+            font-family: 'Product Sans';
+            src: local('Product Sans'), local('ProductSans-Regular');
+        }
+        
+        :root {
+            --brandt-blue: #0033A0; /* Bleu corporate Brandt */
+            --brandt-red: #E3000F;  /* Rouge Brandt */
+            --bg-color: #f4f7f6;
+            --text-color: #333333;
+            --border-color: #d1d5db;
+        }
+
+        body {
+            font-family: 'Product Sans', 'Segoe UI', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid var(--brandt-blue);
+            padding-bottom: 20px;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--brandt-blue);
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .logo span {
+            color: var(--brandt-red);
+        }
+
+        h2 {
+            color: var(--brandt-blue);
+            font-size: 18px;
+            background-color: #e8f0fe;
+            padding: 10px 15px;
+            border-left: 4px solid var(--brandt-red);
+            margin-top: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        input[type="text"], 
+        input[type="datetime-local"], 
+        select, 
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-family: 'Product Sans', sans-serif;
+            box-sizing: border-box;
+        }
+
+        .radio-group, .checkbox-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 5px;
+        }
+
+        .radio-group label, .checkbox-group label {
+            font-weight: normal;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .toggle-section {
+            display: none;
+            margin-top: 10px;
+            padding: 15px;
+            background: #f9fafb;
+            border: 1px dashed var(--border-color);
+        }
+
+        .toggle-section.active {
+            display: block;
+        }
+
+        .btn-submit {
+            background-color: var(--brandt-blue);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 40px;
+            font-family: 'Product Sans', sans-serif;
+            transition: background-color 0.3s;
+        }
+
+        .btn-submit:hover {
+            background-color: #002277;
+        }
+
+        .file-upload-wrapper {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="brief-content">
+        <div class="header">
+            <!-- Remplacer le texte par une vraie image logo si besoin : <img src="logo.png" width="150"> -->
+            <div class="logo">Brandt<span>.</span></div>
+            <h1>Template Brief Créatif</h1>
+        </div>
+
+        <form id="briefForm">
+            <!-- 1. Informations Générales -->
+            <h2>1. Informations Générales</h2>
+            <div class="form-group">
+                <label>Projet</label>
+                <input type="text" placeholder="De quel projet cette demande fait partie ?">
+            </div>
+            <div class="form-group">
+                <label>Titre de la demande</label>
+                <input type="text" placeholder="Le titre de cette demande">
+            </div>
+            <div class="form-group">
+                <label>Format & Ratio</label>
+                <select>
+                    <option>16:9 (Paysage)</option>
+                    <option>9:16 (Story/Reel)</option>
+                    <option>1:1 (Carré)</option>
+                    <option>4:5 (Portrait)</option>
+                    <option>OOH / Affichage</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Deadline (DL)</label>
+                <input type="datetime-local">
+            </div>
+
+            <!-- 2. Produit & Brief -->
+            <h2>2. Contenu & Brief</h2>
+            <div class="form-group">
+                <label>Référence Produit</label>
+                <input type="text" placeholder="Références exactes ou lien Drive">
+            </div>
+            <div class="form-group">
+                <label>Objectif Principal</label>
+                <input type="text" placeholder="Ce qui doit être mis en avant">
+            </div>
+            
+            <div class="form-group">
+                <label>Format du Brief</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="briefType" value="text" onclick="toggleBrief()" checked> Rédiger un paragraphe</label>
+                    <label><input type="radio" name="briefType" value="file" onclick="toggleBrief()"> Importer un document</label>
+                </div>
+            </div>
+
+            <div id="briefText" class="toggle-section active form-group">
+                <label>Description du Brief</label>
+                <textarea rows="4" placeholder="Décrivez le message et la vision visuelle..."></textarea>
+            </div>
+            
+            <div id="briefFile" class="toggle-section form-group">
+                <label>Importer le Brief (PDF, Word)</label>
+                <input type="file" class="file-upload-wrapper">
+            </div>
+
+            <!-- 3. Direction Artistique -->
+            <h2>3. Direction Artistique</h2>
+            <div class="form-group">
+                <label>Style d'environnement</label>
+                <select>
+                    <option>Lifestyle</option>
+                    <option>Background de gamme</option>
+                    <option>Studio / Isolé</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>État du produit (Choix multiples)</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox"> Ouvert</label>
+                    <label><input type="checkbox"> Fermé</label>
+                    <label><input type="checkbox"> Encastré / Intégré</label>
+                    <label><input type="checkbox"> Premier plan</label>
+                    <label><input type="checkbox"> Dans le fond</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Éléments à intégrer visuellement</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox"> Texte principal</label>
+                    <label><input type="checkbox"> USP (Unique Selling Proposition)</label>
+                    <label><input type="checkbox"> Pastille (Nouveau, Promo...)</label>
+                </div>
+            </div>
+
+            <!-- 4. Références & Validation -->
+            <h2>4. Inspirations & Pièces Jointes</h2>
+            <div class="form-group">
+                <label>Importer des références visuelles (Moodboard, exemples)</label>
+                <input type="file" multiple class="file-upload-wrapper">
+            </div>
+            <div class="form-group">
+                <label>Usage des références</label>
+                <select>
+                    <option>À suivre exactement</option>
+                    <option>À titre d'inspiration uniquement</option>
+                </select>
+            </div>
+
+            <h2>5. Checklist de Validation</h2>
+            <div class="form-group checkbox-group" style="flex-direction: column;">
+                <label><input type="checkbox"> La liberté créative est préservée (pas de micro-management visuel).</label>
+                <label><input type="checkbox"> Aucune référence de concurrent direct avec logo caché.</label>
+                <label><input type="checkbox"> Les prises de vue demandées existent dans la matière première.</label>
+            </div>
+        </form>
+
+        <button class="btn-submit" onclick="generatePDF()">✓ Terminer & Télécharger le PDF</button>
+    </div>
+
+    <script>
+        // Fonction pour basculer entre la rédaction de texte et l'upload de fichier
+        function toggleBrief() {
+            const types = document.getElementsByName('briefType');
+            let selected = 'text';
+            for (let type of types) {
+                if (type.checked) selected = type.value;
+            }
+            
+            document.getElementById('briefText').classList.remove('active');
+            document.getElementById('briefFile').classList.remove('active');
+            
+            if (selected === 'text') {
+                document.getElementById('briefText').classList.add('active');
+            } else {
+                document.getElementById('briefFile').classList.add('active');
+            }
+        }
+
+        // Fonction pour générer le PDF
+        function generatePDF() {
+            const element = document.getElementById('brief-content');
+            const button = document.querySelector('.btn-submit');
+            
+            // Masquer le bouton pendant la capture PDF
+            button.style.display = 'none';
+            
+            const opt = {
+                margin:       10,
+                filename:     'Brief_Creatif_Brandt.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                // Réafficher le bouton une fois le PDF généré
+                button.style.display = 'block';
+            });
+        }
+    </script>
+</body>
+</html>
